@@ -1,0 +1,95 @@
+<!doctype html>
+
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>स्मार्ट मिट्टी नमी सिंचाई प्रणाली</title>
+  <meta name="description" content="किसानों के लिए स्वचालित मिट्टी नमी सेंसर और पानी पंप नियंत्रण प्रणाली">
+  <style>
+    :root{--accent:#2b7a78;--muted:#555;--bg:#f7f9fa}
+    *{box-sizing:border-box}
+    body{font-family:'Noto Sans Devanagari',system-ui,Arial,sans-serif;margin:0;background:var(--bg);color:#0b0b0b;line-height:1.5}
+    header{background:linear-gradient(90deg,var(--accent),#3aa6a3);color:white;padding:28px 20px;text-align:center}
+    h1{margin:0;font-size:28px}
+    .container{max-width:900px;margin:20px auto;padding:0 16px}
+    .card{background:white;border-radius:12px;padding:18px;margin-top:16px;box-shadow:0 6px 18px rgba(22,28,32,0.06)}
+    ul{padding-left:20px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:8px;background:var(--accent);color:white;text-decoration:none;margin-top:8px}
+    footer{padding:20px;text-align:center;color:var(--muted)}
+    .diagram{height:160px;background:#eef6f6;display:flex;align-items:center;justify-content:center;border-radius:8px;color:var(--muted)}
+    .sim{display:flex;gap:10px;align-items:center;margin-top:8px}
+    .meter{font-weight:bold}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>स्मार्ट मिट्टी नमी सिंचाई प्रणाली</h1>
+    <p>यह प्रणाली मिट्टी की नमी को पहचानती है और स्वचालित रूप से पानी का पंप चालू या बंद करती है।</p>
+  </header>  <main class="container">
+    <section class="card">
+      <h2>परियोजना का उद्देश्य</h2>
+      <p>किसानों की सहायता के लिए एक ऐसा स्वचालित सिस्टम बनाना जो मिट्टी की नमी को मापकर पानी की आपूर्ति नियंत्रित करे ताकि पौधों को उचित मात्रा में पानी मिले।</p>
+    </section><section class="card">
+  <h2>लक्ष्य (Aim)</h2>
+  <p>एक कम लागत वाला स्वचालित सिंचाई सिस्टम बनाना जो मिट्टी की नमी को मापकर स्वतः पंप चालू और बंद करे।</p>
+</section>
+
+<section class="card">
+  <h2>मुख्य उद्देश्य</h2>
+  <ul>
+    <li>मिट्टी में नमी सेंसर से नमी का स्तर मापना।</li>
+    <li>सूखी मिट्टी होने पर पंप चालू करना और नमी पर्याप्त होने पर पंप बंद करना।</li>
+    <li>पानी की बचत करना और किसान का समय बचाना।</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>सिस्टम कैसे काम करता है</h2>
+  <ol>
+    <li>मिट्टी नमी सेंसर मिट्टी की नमी मापता है।</li>
+    <li>माइक्रोकंट्रोलर सेंसर के मान की जांच करता है।</li>
+    <li>यदि मिट्टी सूखी है, तो पंप चालू किया जाता है।</li>
+    <li>नमी पर्याप्त होने पर पंप स्वचालित रूप से बंद हो जाता है।</li>
+  </ol>
+</section>
+
+<section class="card">
+  <h2>ब्लॉक डायग्राम</h2>
+  <div class="diagram">[ सेंसर → माइक्रोकंट्रोलर → रिले → पंप ]</div>
+  <p style="color:var(--muted)">यह आपके प्रोजेक्ट रिपोर्ट के लिए एक उदाहरण चित्र है।</p>
+</section>
+
+<section class="card">
+  <h2>हार्डवेयर की सूची</h2>
+  <ul>
+    <li>मिट्टी नमी सेंसर</li>
+    <li>Arduino / ESP32 बोर्ड</li>
+    <li>रिले मॉड्यूल</li>
+    <li>डीसी पंप और पावर सप्लाई</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>सिमुलेशन (डेमो)</h2>
+  <div class="sim">
+    <label for="moist">मिट्टी की नमी:</label>
+    <input id="moist" type="range" min="0" max="1023" value="400" oninput="updateSim(this.value)">
+    <div class="meter" id="meter">400</div>
+  </div>
+  <p>पंप की स्थिति: <strong id="pump">बंद</strong></p>
+</section>
+
+  </main>  <footer>
+    © 2025 स्मार्ट सिंचाई प्रणाली | किसानों के लिए जल-संरक्षण समाधान
+  </footer>  <script>
+    let threshold = 300;
+    function updateSim(val){
+      document.getElementById('meter').textContent = val;
+      const pump = document.getElementById('pump');
+      if(Number(val) < threshold){ pump.textContent = 'चालू'; pump.style.color = 'green'; }
+      else { pump.textContent = 'बंद'; pump.style.color = 'red'; }
+    }
+    updateSim(document.getElementById('moist').value);
+  </script></body>
+</html>
