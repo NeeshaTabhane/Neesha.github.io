@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>किसान स्मार्ट साथी</title>
+  <style>
+    /* Reset & basic style */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: #2d7a2d;
+      color: white;
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+
+    header h1 { margin: 0; font-size: 1.8rem; }
+
+    nav { margin-top: 10px; }
+
+    nav a {
+      color: white;
+      margin-right: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 6px 10px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover, nav a.active {
+      background-color: #4CAF50;
+      text-decoration: underline;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 20px auto 40px;
+      background: white;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+      min-height: 400px;
+    }
+
+    section { display: none; }
+    section.active { display: block; }
+
+    h2 { color: #2d7a2d; }
+    label { font-weight: 600; }
+
+    input[type=range], input[type=number] { width: 100%; margin: 10px 0 15px; }
+
+    button {
+      background-color: #2d7a2d;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      margin: 5px 8px 10px 0;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    button:hover { background-color: #246624; }
+
+    .status { font-size: 1.2rem; margin-top: 8px; font-weight: 600; }
+
+    footer {
+      background-color: #2d7a2d;
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+    }
+
+    canvas { max-width: 100%; height: 200px; margin-top: 10px; }
+
+    a.link {
+      color: #2d7a2d;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    a.link:hover { text-decoration: underline; color: #1b5e1b; }
+
+    @media(max-width: 600px) {
+      nav a { display: block; margin: 8px 0; }
+      main { margin: 10px 10px 30px; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🌾 किसान स्मार्ट साथी</h1>
+  <nav>
+    <a href="#" data-target="home" class="active">मुख्य पृष्ठ</a>
+    <a href="#" data-target="moisture">मिट्टी नमी नियंत्रण</a>
+    <a href="#" data-target="soilInfo">मिट्टी की जानकारी</a>
+    <a href="#" data-target="knowledge">ज्ञान केंद्र</a>
+  </nav>
+</header>
+
+<main>
+  <!-- Home Page -->
+  <section id="home" class="active">
+    <h2>स्वागत है किसान स्मार्ट साथी में</h2>
+    <p>यह वेबसाइट किसानों को मिट्टी की नमी का सही अंदाजा लगाने, पानी का बेहतर प्रबंधन करने और फसल की पैदावार बढ़ाने में मदद करती है।</p>
+    <ul>
+      <li>मिट्टी नमी के अनुसार सिंचाई की योजना बनाएं।</li>
+      <li>पंप को ऑटो या मैनुअल मोड में नियंत्रित करें।</li>
+      <li>सिंचाई का इतिहास और नमी चार्ट देखें।</li>
+      <li>सरकारी योजनाओं और कृषि सलाह से जुड़ें।</li>
+    </ul>
+  </section>
+
+  <!-- Soil Moisture Page -->
+  <section id="moisture">
+    <h2>मिट्टी नमी (Moisture) नियंत्रण</h2>
+    <label for="moistureRange">मिट्टी नमी (%) चुनें:</label>
+    <input type="range" id="moistureRange" min="0" max="100" value="50" />
+    <p>वर्तमान नमी स्तर: <strong id="moisturePercent">50%</strong></p>
+
+    <h3>ऑटो सिमुलेशन</h3>
+    <button id="simButton">▶ सिमुलेशन शुरू करें</button>
+    <button id="stopSimButton" style="display:none;">⏹ सिमुलेशन रोकें</button>
+
+    <h3>नमी चार्ट</h3>
+    <canvas id="moistureChart"></canvas>
+  </section>
+
+  <!-- Soil Information Page -->
+  <section id="soilInfo">
+    <h2>मिट्टी की जानकारी जो किसान को जाननी चाहिए</h2>
+
+    <p>मिट्टी खेती की सफलता की नींव है। अच्छी फसल के लिए मिट्टी की सही समझ जरूरी है। नीचे कुछ महत्वपूर्ण बातें:</p>
+    <ul>
+
+      <li><strong>मिट्टी के प्रकार:</strong> बालू मिट्टी, दोमट मिट्टी, चिकनी मिट्टी, बलुई दोमट - हर प्रकार की मिट्टी की जल धारण क्षमता अलग होती है।</li>
+
+      <li><strong>मिट्टी की नमी:</strong> फसलों के लिए सही नमी स्तर जरूरी है, जिससे जड़ें सही तरीके से विकसित होती हैं।</li>
+
+      <li><strong>पीएच स्तर:</strong> मिट्टी का पीएच 6-7 के बीच होना बेहतर माना जाता है। ज्यादा अम्लीय या क्षारीय मिट्टी फसल को नुकसान पहुंचा सकती है।</li>
+
+      <li><strong>मृदा स्वास्थ्य कार्ड:</strong> अपनी जमीन की मिट्टी की जाँच करवाएं ताकि आपको पता चले कि उसमें पोषक तत्व कितने हैं।</li>
+
+      <li><strong>जल निकासी:</strong> मिट्टी में पानी सही तरीके से रिसना चाहिए, नमी ज्यादा होने पर जड़ें सड़ सकती हैं।</li>
+
+      <li><strong>सिंचाई:</strong> मिट्टी की नमी के अनुसार सिंचाई करें, ज्यादा पानी से बचें।</li>
+
+      <li><strong>खाद एवं उर्वरक:</strong> मिट्टी के पोषक तत्वों के अनुसार खाद डालें।</li>
+
+    </ul>
+
+    <p>अच्छी मिट्टी के लिए नियमित जुताई, हरी खाद, और जैविक पदार्थ डालना आवश्यक है।</p>
+  </section>
+
+  <!-- Knowledge Center -->
+  <section id="knowledge">
+    <h2>ज्ञान केंद्र</h2>
+    <h3>सरकारी योजनाएं</h3>
+    <ul>
+      <li><a class="link" href="https://pmksy.gov.in/" target="_blank">प्रधानमंत्री कृषि सिंचाई योजना</a></li>
+      <li><a class="link" href="https://soilhealth.dac.gov.in/" target="_blank">मृदा स्वास्थ्य कार्ड योजना</a></li>
+      <li><a class="link" href="https://pmkisan.gov.in/" target="_blank">प्रधानमंत्री किसान सम्मान निधि योजना</a></li>
+    </ul>
+
+    <h3>किसानों की सफलता की कहानियां</h3>
+    <p>रमेश (पंजाब): "इस सिस्टम ने मेरी सिंचाई की आदतों को बदल दिया। पानी की बचत हुई और फसल भी बेहतर हुई।"  
+    👉 <a class="link" href="https://agricoop.gov.in/" target="_blank">और पढ़ें कृषि मंत्रालय वेबसाइट पर</a></p>
+
+    <h3>संपर्क करें</h3>
+    <p>
+      किसान हेल्पलाइन: <a class="link" href="tel:18001234567">1800-123-4567</a><br/>
+      <a class="link" href="https://farmer.gov.in/" target="_blank">कृषि एवं किसान कल्याण मंत्रालय</a>
+    </p>
+  </section>
+</main>
+
+<footer>
+  <p>© 2025 B.Tech CSE (AIML) Field Project — SBJITMR</p>
+  <h3>Designed & Developed by:</h3>
+  <ul>
+    <li>Neesha Tabhane</li>
+    <li>Sejal Shrivas</li>
+    <li>Priyanshu Borkar</li>
+    <li>Manas Gupta</li>
+    <li>Shruti Bhabhda</li>
+  </ul>
+  </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Navigation
+  const navLinks = document.querySelectorAll('nav a');
+  const sections = document.querySelectorAll('main section');
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = link.getAttribute('data-target');
+      navLinks.forEach(l => l.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      link.classList.add('active');
+      document.getElementById(target).classList.add('active');
+    });
+  });
+
+  // Moisture control
+  const moistureRange = document.getElementById('moistureRange');
+  const moisturePercent = document.getElementById('moisturePercent');
+  const simButton = document.getElementById('simButton');
+  const stopSimButton = document.getElementById('stopSimButton');
+
+  const ctx = document.getElementById('moistureChart').getContext('2d');
+  let moistureHistory = [];
+
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'मिट्टी नमी (%)',
+        data: [],
+        borderColor: '#2d7a2d',
+        backgroundColor: 'rgba(45,122,45,0.3)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { min:0, max:100, ticks:{stepSize:10}, title:{display:true, text:'नमी (%)'} },
+        x: { title:{display:true, text:'समय'} }
+      }
+    }
+  });
+
+  function updateMoisture(val){
+    moisturePercent.textContent = val + '%';
+    const now = new Date();
+    const timeLabel = now.toLocaleTimeString();
+    moistureHistory.push({time: timeLabel, value: val});
+    if(moistureHistory.length > 30) moistureHistory.shift();
+    chart.data.labels = moistureHistory.map(item => item.time);
+    chart.data.datasets[0].data = moistureHistory.map(item => item.value);
+    chart.update();
+  }
+
+  moistureRange.addEventListener('input', () => updateMoisture(Number(moistureRange.value)));
+
+  let simInterval = null;
+  simButton.addEventListener('click', () => {
+    simButton.style.display = 'none';
+    stopSimButton.style.display = 'inline-block';
+    simInterval = setInterval(()=>{
+      let currentVal = Number(moistureRange.value);
+      let change = Math.floor(Math.random()*7)-3;
+      let newVal = Math.max(0, Math.min(100, currentVal + change));
+      moistureRange.value = newVal;
+      updateMoisture(newVal);
+    },1000);
+  });
+
+  stopSimButton.addEventListener('click', ()=>{
+    clearInterval(simInterval);
+    simInterval=null;
+    stopSimButton.style.display='none';
+    simButton.style.display='inline-block';
+  });
+
+  window.onload = ()=>updateMoisture(Number(moistureRange.value));
+</script>
+
+</body>
+</html>
